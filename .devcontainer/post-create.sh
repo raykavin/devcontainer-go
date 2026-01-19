@@ -67,4 +67,14 @@ golangci-lint version
 echo "> Running initial lint"
 golangci-lint run || true
 
+echo "> Checking out a develop branch"
+if git show-ref --verify --quiet "refs/heads/develop"; then
+  if git rev-parse --abbrev-ref HEAD | grep -q "^develop$"; then
+    echo "Already on develop branch"
+  else
+    echo "Switching to develop branch"
+    git checkout develop
+  fi
+fi
+
 echo "Post-create completed successfully"
