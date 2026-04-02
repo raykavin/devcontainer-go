@@ -7,7 +7,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.dev
-      target: devcontainer
+      target: development
     networks:
       - devnet
     volumes:
