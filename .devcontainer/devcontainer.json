@@ -14,7 +14,7 @@
     },
     "service": "golang",
     "remoteUser": "vscode",
-    "postCreateCommand": "sh ./post-create.sh",
+    "postCreateCommand": "sh ./.devcontainer/post-create.sh",
     "customizations": {
         "vscode": {
             "extensions": [
