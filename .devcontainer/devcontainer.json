@@ -5,15 +5,18 @@
         "docker-compose.dev.yml"
     ],
     "containerEnv": {
+        "TZ": "America/Belem",
         "PROJECT_NAME": "my-application",
+
         "GIT_CONFIG_DEV_USERNAME": "your_user_name",
         "GIT_CONFIG_DEV_EMAIL": "your-email@example.com",
         "GIT_CONFIG_TOKEN": "your_git_token_here",
-        "GIT_REPO_ADDRESS": "https: //github.com/raykavin/devcontainer-go.git",
+
+        "GIT_REPO_ADDRESS": "https://github.com/raykavin/devcontainer-go.git",
         "GIT_INIT_DEFAULT_BRANCH": "feat/initial-setup",
-        "FORGEJO_HOST": "",
-        "FORGEJO_PORT": "",
-        "TZ": "America/Belem"
+
+        "GO_PROXY_HOST": "",
+        "GO_PROXY_PORT": ""
     },
     "service": "golang",
     "remoteUser": "vscode",
