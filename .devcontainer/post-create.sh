@@ -32,12 +32,12 @@ if git show-ref --verify --quiet "refs/heads/$GIT_INIT_DEFAULT_BRANCH"; then
   git branch --set-upstream-to="origin/$GIT_INIT_DEFAULT_BRANCH" "$GIT_INIT_DEFAULT_BRANCH" 2>/dev/null || true
 fi
 
-# FORGEJO PROXY
-if [ -n "$FORGEJO_HOST" ] && [ -n "$FORGEJO_PORT" ] && [ -n "$GIT_CONFIG_DEV_USERNAME" ] && [ -n "$GIT_CONFIG_TOKEN" ]; then
-  log "Forgejo env vars detected, running forgejo-setup.sh"
-  sh .devcontainer/forgejo-setup.sh
+# GO PRIVATE PROXY
+if [ -n "$GO_PROXY_HOST" ] && [ -n "$GO_PROXY_PORT" ] && [ -n "$GIT_CONFIG_DEV_USERNAME" ] && [ -n "$GIT_CONFIG_TOKEN" ]; then
+  log "Go private proxy env vars detected, running proxy-setup.sh"
+  sh .devcontainer/proxy-setup.sh
 else
-  info "Forgejo env vars not set, skipping forgejo-setup.sh"
+  info "Go private proxy env vars not set, skipping proxy-setup.sh"
 fi
 
 # GO ENVIRONMENT
