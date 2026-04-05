@@ -7,18 +7,15 @@ info() { echo "  $*"; }
 
 # GIT
 log "Configuring Git"
-
 if [ ! -d ".git" ]; then
   info "Initializing repository (branch: $GIT_INIT_DEFAULT_BRANCH)"
   git init --initial-branch="$GIT_INIT_DEFAULT_BRANCH"
 else
   info "Repository already exists, skipping init"
 fi
-
 git config --global --add safe.directory "/workspaces/app"
 git config --global user.name  "$GIT_CONFIG_DEV_USERNAME"
 git config --global user.email "$GIT_CONFIG_DEV_EMAIL"
-
 if git remote | grep -q "^origin$"; then
   CURRENT_URL="$(git remote get-url origin)"
   if [ "$CURRENT_URL" != "$GIT_REPO_ADDRESS" ]; then
@@ -31,18 +28,23 @@ else
   info "Adding origin remote"
   git remote add origin "$GIT_REPO_ADDRESS"
 fi
-
 if git show-ref --verify --quiet "refs/heads/$GIT_INIT_DEFAULT_BRANCH"; then
   git branch --set-upstream-to="origin/$GIT_INIT_DEFAULT_BRANCH" "$GIT_INIT_DEFAULT_BRANCH" 2>/dev/null || true
+fi
+
+# FORGEJO PROXY
+if [ -n "$FORGEJO_HOST" ] && [ -n "$FORGEJO_PORT" ] && [ -n "$GIT_CONFIG_DEV_USERNAME" ] && [ -n "$GIT_CONFIG_TOKEN" ]; then
+  log "Forgejo env vars detected, running forgejo-setup.sh"
+  sh .devcontainer/forgejo-setup.sh
+else
+  info "Forgejo env vars not set, skipping forgejo-setup.sh"
 fi
 
 # GO ENVIRONMENT
 log "Adjusting Go directory permissions"
 sudo chmod -R 777 /go/bin /go/pkg
-
 log "Ensuring GOPATH is in PATH"
 export PATH="$PATH:/go/bin"
-
 log "Initializing Go modules"
 if [ ! -f go.mod ]; then
   info "Creating module: $PROJECT_NAME"
@@ -51,7 +53,6 @@ else
   info "go.mod already exists, skipping"
 fi
 go mod tidy
-
 if [ -n "$GOPRIVATE" ]; then
   log "Setting private Go repositories"
   go env -w GOPRIVATE="$GOPRIVATE"
@@ -64,12 +65,10 @@ go install golang.org/x/tools/cmd/goimports@latest
 go install github.com/go-delve/delve/cmd/dlv@latest
 go install honnef.co/go/tools/cmd/staticcheck@latest
 go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
-
 log "Verifying installed tools"
 gopls version
 dlv version
 golangci-lint version
-
 log "Running initial lint"
 golangci-lint run || true
 
