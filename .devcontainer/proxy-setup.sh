@@ -7,18 +7,18 @@ err()  { echo "[✘] $*"; exit 1; }
 
 log "Setup Go Private Proxy - $GO_PROXY_HOST"
 
-# 1. Dependencies
+# DEPENDENCIES
 log "Installing dependencies..."
 sudo apt-get install -y nginx dnsutils openssl > /dev/null 2>&1
 info "nginx, dnsutils, openssl installed"
 
-# 2. Resolve IP
+# RESOLVE IP
 log "Resolving IP for $GO_PROXY_HOST..."
 PROXY_IP=$(dig +short "$GO_PROXY_HOST" | grep -E '^[0-9]+\.' | head -1)
 [ -z "$PROXY_IP" ] && err "Could not resolve IP for $GO_PROXY_HOST"
 info "IP resolved: $PROXY_IP"
 
-# 3. Self-signed certificate
+# SELF-SIGNED CERTIFICATE
 log "Generating self-signed certificate..."
 sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
   -keyout /etc/ssl/private/go-proxy-local.key \
@@ -27,13 +27,13 @@ sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
   -addext "subjectAltName=DNS:$GO_PROXY_HOST" > /dev/null 2>&1
 info "Certificate generated"
 
-# 4. Trust self-signed certificate
+# TRUST SELF-SIGNED CERTIFICATE
 log "Trusting self-signed certificate..."
 sudo cp /etc/ssl/certs/go-proxy-local.crt /usr/local/share/ca-certificates/go-proxy-local.crt
 sudo update-ca-certificates > /dev/null 2>&1
 info "Certificate trusted"
 
-# 5. Nginx configuration
+# NGINX CONFIGURATION
 log "Configuring nginx..."
 sudo tee /etc/nginx/sites-available/go-proxy > /dev/null << EOF
 server {
@@ -63,7 +63,7 @@ sudo nginx -t > /dev/null 2>&1 || err "Invalid nginx configuration"
 sudo service nginx restart > /dev/null 2>&1
 info "nginx configured and started"
 
-# 6. Hosts file
+# HOSTS FILE
 log "Configuring /etc/hosts..."
 if grep -q "$GO_PROXY_HOST" /etc/hosts; then
   info "$GO_PROXY_HOST already in /etc/hosts, replacing..."
@@ -72,12 +72,12 @@ fi
 echo "127.0.0.1 $GO_PROXY_HOST" | sudo tee -a /etc/hosts > /dev/null
 info "/etc/hosts updated"
 
-# 7. Git authentication
+# GIT AUTHENTICATION
 log "Configuring git authentication..."
 git config --global url."https://$GIT_CONFIG_DEV_USERNAME:$GIT_CONFIG_TOKEN@$GO_PROXY_HOST/".insteadOf "https://$GO_PROXY_HOST/"
 info "Git credentials configured"
 
-# 8. Go private environment
+# GO PRIVATE ENVIRONMENT
 log "Configuring Go private env vars..."
 go env -w GOPRIVATE="$GO_PROXY_HOST/*"
 go env -w GONOSUMDB="$GO_PROXY_HOST/*"
