@@ -34,13 +34,11 @@ vendor/
 *.toml
 *.ini
 *.xlsx
+*.json
 
 # Ignore example configurations
-!*.example.yml
-!*.example.yaml
-!*.example.toml
-!*.example.ini
-!*.example.xlsx
+!*.example.*
+!*.example
 
 # Logs
 *.log
