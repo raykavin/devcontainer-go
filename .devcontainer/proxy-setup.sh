@@ -9,7 +9,7 @@ log "Setup Go Private Proxy - $GO_PROXY_HOST"
 
 # DEPENDENCIES
 log "Installing dependencies..."
-sudo apt-get install -y nginx dnsutils openssl > /dev/null 2>&1
+sudo apt update && sudo apt install -y nginx dnsutils openssl > /dev/null 2>&1
 info "nginx, dnsutils, openssl installed"
 
 # RESOLVE IP
