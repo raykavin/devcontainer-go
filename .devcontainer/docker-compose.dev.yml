@@ -12,8 +12,8 @@ services:
       - devnet
     volumes:
       - ./../:/workspaces/app:rw
-      - ../.docker/go/bin:/go/bin:rw
-      - ../.docker/go/pkg:/go/pkg:rw
+      - ../../.docker/go/bin:/go/bin:rw
+      - ../../.docker/go/pkg:/go/pkg:rw
 
 networks:
   devnet:
