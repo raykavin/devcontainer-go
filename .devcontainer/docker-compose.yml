@@ -1,0 +1,33 @@
+services:
+  workspace:
+    tty: true
+    container_name: dev_my-app
+    restart: on-failure
+    working_dir: /workspaces/app
+    build:
+      context: .
+      target: development
+      args:
+        GO_VERSION: "1.26"
+        TZ: "America/Belem"
+    networks:
+      - devnet
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./../:/workspaces/app:rw
+      # Go caches
+      - go_bin:/go/bin:rw
+      - go_pkg:/go/pkg:rw
+      # Claude Code state
+      - claude_code:/home/vscode/.claude:rw
+
+networks:
+  devnet:
+    name: devnet
+    driver: bridge
+
+volumes:
+  go_pkg:
+  go_bin:
+  claude_code:
