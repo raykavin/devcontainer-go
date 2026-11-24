@@ -26,7 +26,7 @@
             "onAutoForward": "notify"
         }
     },
-    "postStartCommand": "sudo chown -R vscode:vscode /home/vscode/.claude",
+    "postStartCommand": "sh ./.devcontainer/post-start.sh",
     "postCreateCommand": "sh ./.devcontainer/post-create.sh",
     "customizations": {
         "vscode": {
